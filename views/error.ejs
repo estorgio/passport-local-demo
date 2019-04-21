@@ -1,0 +1,12 @@
+<% include partials/header %>
+
+<div class="container">
+  <p>This is the error page</p>
+
+  <% if (errorInfo) { %>
+  <h5>Stack trace:</h5>
+  <pre><%= errorInfo.stack %></pre>
+  <% } %>
+</div>
+
+<% include partials/footer %>
