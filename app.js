@@ -3,6 +3,7 @@ const path = require('path');
 
 const middlewares = require('./middleware');
 const indexRoutes = require('./routes');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use('/static/assets',
     { maxAge: '1d' }));
 
 app.use(middlewares);
+app.use('/', authRoutes);
 app.use('/', indexRoutes);
 
 const port = process.env.PORT || 3000;

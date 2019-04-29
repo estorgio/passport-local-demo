@@ -1,7 +1,9 @@
 <% include partials/header %>
 
 <div class="container">
-  <p>This is the error page</p>
+  <h1>500 Internal Server Error</h1>
+  <p>This page is displayed when the app encounters an error.</p>
+  <p>This page will also display the stack trace on development.</p>
 
   <% if (errorInfo) { %>
   <h5>Stack trace:</h5>
