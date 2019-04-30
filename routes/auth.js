@@ -3,10 +3,12 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/login', (req, res) => {
+  res.locals.pageTitle = 'Log In';
   res.render('auth/login');
 });
 
 router.get('/signup', (req, res) => {
+  res.locals.pageTitle = 'Sign Up';
   res.render('auth/signup');
 });
 
