@@ -4,6 +4,7 @@ const path = require('path');
 const middlewares = require('./middleware');
 const indexRoutes = require('./routes');
 const authRoutes = require('./routes/auth');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/static/assets',
 
 app.use(middlewares);
 app.use('/', authRoutes);
+app.use('/dashboard', dashboardRoutes);
 app.use('/', indexRoutes);
 
 const port = process.env.PORT || 3000;
