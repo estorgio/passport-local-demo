@@ -1,8 +1,25 @@
 <% include ../partials/header %>
 
 <div class="container">
-  <h1>Login</h1>
-  <p>This is the login page.</p>
+  <div class="row justify-content-center align-items-end">
+    <div class="col col-sm-10 col-md-7 col-lg-5 col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Log in to Passport Demo</h5>
+          <form action="/login" method="post">
+            <div class="form-group">
+              <input type="text" class="form-control" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <button class="btn btn-primary btn-block">Log In</button>
+            <a href="/signup" class="btn btn-secondary btn-block">Sign up a new account</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <% include ../partials/footer %>
