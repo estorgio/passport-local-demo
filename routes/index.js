@@ -25,11 +25,11 @@ router.all('*', (req, res) => {
 
 // Global error handler route
 // eslint-disable-next-line no-unused-vars
-router.use((err, req, res, next) => {
+function globalErrorHandler(err, req, res, next) {
   const errorInfo = !production ? err : null;
   res.locals.pageTitle = 'Internal Server Error';
   res.status(500);
   res.render('error', { errorInfo });
-});
+}
 
-module.exports = router;
+module.exports = [router, globalErrorHandler];

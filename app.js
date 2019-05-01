@@ -3,7 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
 
-const middlewares = require('./middleware');
+const globalVars = require('./middleware');
 const indexRoutes = require('./routes');
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
@@ -16,6 +16,7 @@ dbConnect();
 
 const app = express();
 
+app.use(globalVars);
 app.use(session);
 app.use(auth);
 
@@ -36,7 +37,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(middlewares);
 app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/', indexRoutes);
