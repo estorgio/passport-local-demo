@@ -1,8 +1,6 @@
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
-require('dotenv').config();
-
 const sessionInstance = session({
   name: process.env.SESSION_NAME,
   secret: process.env.SESSION_SECRET,
