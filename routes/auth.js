@@ -3,18 +3,23 @@ const express = require('express');
 const router = express.Router();
 
 const passport = require('passport');
+const csurf = require('csurf')();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 
 router.get('/login',
   auth.isLoggedOut,
+  csurf,
   (req, res) => {
+    const csrfToken = req.csrfToken();
+
     res.locals.pageTitle = 'Log In';
-    res.render('auth/login');
+    res.render('auth/login', { csrfToken });
   });
 
 router.post('/login',
   auth.isLoggedOut,
+  csurf,
   passport.authenticate('local', {
     successFlash: 'You have successfully logged in.',
     successRedirect: '/dashboard',
@@ -32,13 +37,17 @@ router.get('/logout',
 
 router.get('/signup',
   auth.isLoggedOut,
+  csurf,
   (req, res) => {
+    const csrfToken = req.csrfToken();
+
     res.locals.pageTitle = 'Sign Up';
-    res.render('auth/signup');
+    res.render('auth/signup', { csrfToken });
   });
 
 router.post('/signup',
   auth.isLoggedOut,
+  csurf,
   (req, res, next) => {
     const { username, password, confirmPassword } = req.body;
 
