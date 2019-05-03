@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const flash = require('connect-flash');
+const helmet = require('helmet');
 
 const globalVars = require('./middleware');
 const indexRoutes = require('./routes');
@@ -19,6 +20,7 @@ dbConnect();
 const app = express();
 
 app.use(globalVars);
+app.use(helmet());
 app.use(session);
 app.use(auth);
 
