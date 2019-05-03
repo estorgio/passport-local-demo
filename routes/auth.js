@@ -6,6 +6,7 @@ const passport = require('passport');
 const csurf = require('csurf')();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
+const recaptcha = require('../utils/recaptcha');
 
 router.get('/login',
   auth.isLoggedOut,
@@ -40,14 +41,16 @@ router.get('/signup',
   csurf,
   (req, res) => {
     const csrfToken = req.csrfToken();
+    const recaptchaSiteKey = recaptcha.getSiteKey();
 
     res.locals.pageTitle = 'Sign Up';
-    res.render('auth/signup', { csrfToken });
+    res.render('auth/signup', { csrfToken, recaptchaSiteKey });
   });
 
 router.post('/signup',
   auth.isLoggedOut,
   csurf,
+  recaptcha.validate(),
   (req, res, next) => {
     const { username, password, confirmPassword } = req.body;
 
@@ -74,5 +77,14 @@ router.post('/signup',
       });
     });
   });
+
+router.use((err, req, res, next) => {
+  if (err.code === 'ERECAPTCHAFAIL') {
+    req.flash('error', err.message);
+    res.redirect('back');
+    return;
+  }
+  next(err);
+});
 
 module.exports = router;
