@@ -52,7 +52,8 @@ router.post('/signup',
   csurf,
   recaptcha.validate(),
   (req, res, next) => {
-    const { username, password, confirmPassword } = req.body;
+    const { password, confirmPassword } = req.body;
+    const { fullName, email } = req.body;
 
     if (password !== confirmPassword) {
       req.flash('error', "Password doesn't match.");
@@ -60,7 +61,7 @@ router.post('/signup',
       return;
     }
 
-    User.register(new User({ username }), password, (err) => {
+    User.register(new User({ fullName, email }), password, (err) => {
       if (err) {
         req.flash('error', err.message);
         res.redirect('/signup');
@@ -72,7 +73,7 @@ router.post('/signup',
           next(err2);
           return;
         }
-        req.flash('success', `Welcome to Passport Demo, ${req.user.username}!`);
+        req.flash('success', `Welcome to Passport Demo, ${req.user.fullName}!`);
         res.redirect('/dashboard');
       });
     });

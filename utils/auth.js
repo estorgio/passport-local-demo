@@ -1,12 +1,12 @@
 const passport = require('passport');
-const LocalStrategy = require('passport-local');
+// const LocalStrategy = require('passport-local');
 
 const User = require('../models/user');
 
 const passportInit = passport.initialize();
 const passportSession = passport.session();
 
-passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
