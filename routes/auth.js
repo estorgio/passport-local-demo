@@ -51,32 +51,28 @@ router.post('/signup',
   auth.isLoggedOut,
   csurf,
   recaptcha.validate(),
-  (req, res, next) => {
-    const { password, confirmPassword } = req.body;
-    const { fullName, email } = req.body;
+  async (req, res, next) => {
+    try {
+      const { password, confirmPassword } = req.body;
+      const { fullName, email } = req.body;
 
-    if (password !== confirmPassword) {
-      req.flash('error', "Password doesn't match.");
-      res.redirect('/signup');
-      return;
-    }
-
-    User.register(new User({ fullName, email }), password, (err) => {
-      if (err) {
-        req.flash('error', err.message);
-        res.redirect('/signup');
-        return;
+      if (password !== confirmPassword) {
+        throw new Error("Password doesn't match");
       }
 
-      passport.authenticate('local')(req, res, (err2) => {
-        if (err2) {
-          next(err2);
-          return;
-        }
-        req.flash('success', `Welcome to Passport Demo, ${req.user.fullName}!`);
-        res.redirect('/dashboard');
-      });
-    });
+      const newUser = new User({ fullName, email });
+      await User.register(newUser, password);
+
+      next();
+    } catch (err) {
+      req.flash('error', err.message);
+      res.redirect('/signup');
+    }
+  },
+  passport.authenticate('local'),
+  (req, res) => {
+    req.flash('success', `Welcome to Passport Demo, ${req.user.fullName}!`);
+    res.redirect('/dashboard');
   });
 
 router.use((err, req, res, next) => {
