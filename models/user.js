@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   fullName: String,
   email: String,
   password: String,
+  verified: { type: Boolean, default: false },
 });
 
 UserSchema.plugin(passportLocalMongoose, {
