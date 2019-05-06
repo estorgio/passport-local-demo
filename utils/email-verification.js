@@ -31,7 +31,7 @@ const verificationEmail = mailer.createTemplate(params => ({
   <p>Thank you for signing up on Passport Demo.</p>
   <p>Please visit the link below to verify your account:</p>
   <p><a href="${params.link}">${params.link}</a></p>
-  <p>This verification link will expire in 1 hour. You may generate another link by logging in to your account.</p>
+  <p>This verification link will expire in 10 minutes. You may generate another link by logging in to your account.</p>
   <p>Thank you,<br>Passport Demo Team`,
 }));
 
@@ -55,7 +55,7 @@ async function sendVerificationEmail(user) {
     user: user._id,
     token: token.derivedToken,
     salt: token.salt,
-    expires: Date.now() + 3600000,
+    expires: Date.now() + 600000,
   });
   await newToken.save();
 
