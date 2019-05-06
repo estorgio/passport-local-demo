@@ -1,5 +1,6 @@
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
+const redisClient = require('./redis-client');
 
 const sessionInstance = session({
   name: process.env.SESSION_NAME,
@@ -9,9 +10,7 @@ const sessionInstance = session({
   saveUninitialized: false,
   store: new RedisStore({
     prefix: process.env.SESSION_PREFIX,
-    url: process.env.REDISCLOUD_URL
-      || process.env.REDIS_URL
-      || process.env.SESSION_REDIS_URL,
+    client: redisClient,
   }),
 });
 
