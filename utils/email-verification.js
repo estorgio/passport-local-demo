@@ -9,7 +9,7 @@ const User = require('../models/user');
 const randomBytes = util.promisify(crypto.randomBytes);
 const pbkdf2 = util.promisify(crypto.pbkdf2);
 
-const { VERIFY_BASE_URL } = process.env;
+const { ROOT_URL } = process.env;
 
 async function generateToken(encoding) {
   let tokenValue = await randomBytes(32);
@@ -39,7 +39,7 @@ async function sendVerificationEmail(user) {
   const token = await generateToken('base64');
   const tokenURL = encodeURIComponent(token.tokenValue);
   const saltURL = encodeURIComponent(token.salt);
-  const verifyLink = `${VERIFY_BASE_URL}${tokenURL}/${saltURL}`;
+  const verifyLink = `${ROOT_URL}verify/${tokenURL}/${saltURL}`;
 
   const newToken = new VerificationToken({
     user: user._id,
