@@ -35,7 +35,17 @@ const verificationEmail = mailer.createTemplate(params => ({
   <p>Thank you,<br>Passport Demo Team`,
 }));
 
+async function hasValidToken(user) {
+  const token = await VerificationToken.findOne({
+    user: user._id,
+    expires: { $gt: Date.now() },
+  });
+  return !!(token);
+}
+
 async function sendVerificationEmail(user) {
+  if (await hasValidToken(user)) return;
+
   const token = await generateToken('base64');
   const tokenURL = encodeURIComponent(token.tokenValue);
   const saltURL = encodeURIComponent(token.salt);
@@ -49,7 +59,6 @@ async function sendVerificationEmail(user) {
   });
   await newToken.save();
 
-  // TODO: uncomment and specify recipient
   await verificationEmail.sendTo(user.email, {
     name: user.fullName,
     link: verifyLink,
