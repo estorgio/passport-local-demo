@@ -14,6 +14,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const dbConnect = require('./utils/db');
 const session = require('./utils/session');
 const auth = require('./utils/auth');
+const getIP = require('./utils/get-ip');
 
 dbConnect();
 
@@ -25,6 +26,9 @@ app.use(session);
 app.use(auth);
 
 app.set('view engine', 'ejs');
+
+app.set('trust proxy', getIP.isTrustedProxy());
+app.use(getIP.extractClientIP);
 
 app.use('/static/vendor',
   express.static(path.join(__dirname, 'public', 'vendor'),

@@ -2,12 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 
-const passport = require('passport');
 const csurf = require('csurf')();
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 const recaptcha = require('../utils/recaptcha');
 const emailVerification = require('../utils/email-verification');
+const passportCustomAuth = require('../utils/passport-custom-auth');
+const rateLimit = require('../middleware/rate-limit');
 
 router.get('/login',
   auth.isLoggedOut,
@@ -22,19 +23,26 @@ router.get('/login',
 router.post('/login',
   auth.isLoggedOut,
   csurf,
-  passport.authenticate('local', {
-    failureFlash: 'Invalid username or password!',
-    failureRedirect: '/login',
-  }),
+  rateLimit.preLoginCheck,
+  passportCustomAuth('local'),
+  rateLimit.postLoginCheck,
+  async (req, res, next) => {
+    if (!req.isAuthenticated || req.user.verified) {
+      next();
+      return;
+    }
+    await emailVerification.sendVerificationEmail(req.user);
+    req.logout();
+    req.flash('success', 'Your account is almost done. To complete the sign up, please open the verification link sent to you via email');
+    res.redirect('/login');
+  },
   async (req, res) => {
-    if (!req.user.verified) {
-      await emailVerification.sendVerificationEmail(req.user);
-      req.logout();
-      req.flash('success', 'Your account is almost done. To complete the sign up, please open the verification link sent to you via email');
-      res.redirect('/login');
-    } else {
+    if (req.isAuthenticated) {
       req.flash('success', 'You have successfully logged in.');
       res.redirect('/dashboard');
+    } else {
+      req.flash('error', 'Invalid username or password!');
+      res.redirect('/login');
     }
   });
 
