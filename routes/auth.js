@@ -7,8 +7,6 @@ const User = require('../models/user');
 const auth = require('../middleware/auth');
 const recaptcha = require('../utils/recaptcha');
 const emailVerification = require('../utils/email-verification');
-const passportCustomAuth = require('../utils/passport-custom-auth');
-const rateLimit = require('../middleware/rate-limit');
 
 router.get('/login',
   auth.isLoggedOut,
@@ -23,9 +21,7 @@ router.get('/login',
 router.post('/login',
   auth.isLoggedOut,
   csurf,
-  rateLimit.preLoginCheck,
-  passportCustomAuth('local'),
-  rateLimit.postLoginCheck,
+  auth.passportCustomAuth('local'),
   async (req, res, next) => {
     if (!req.isAuthenticated || req.user.verified) {
       next();
