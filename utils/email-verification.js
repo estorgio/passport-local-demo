@@ -2,12 +2,16 @@
 const crypto = require('crypto');
 const util = require('util');
 const mailer = require('./mailer');
+const redisClient = require('./redis-client');
 
-const VerificationToken = require('../models/verification-token');
 const User = require('../models/user');
 
 const randomBytes = util.promisify(crypto.randomBytes);
 const pbkdf2 = util.promisify(crypto.pbkdf2);
+
+const redisGet = util.promisify(redisClient.get).bind(redisClient);
+const redisSetEx = util.promisify(redisClient.setex).bind(redisClient);
+const redisDel = util.promisify(redisClient.del).bind(redisClient);
 
 const { ROOT_URL } = process.env;
 
@@ -36,10 +40,7 @@ const verificationEmail = mailer.createTemplate(params => ({
 }));
 
 async function hasValidToken(user) {
-  const token = await VerificationToken.findOne({
-    user: user._id,
-    expires: { $gt: Date.now() },
-  });
+  const token = await redisGet(`email-verification:${user._id}`);
   return !!(token);
 }
 
@@ -51,13 +52,15 @@ async function sendVerificationEmail(user) {
   const saltURL = encodeURIComponent(token.salt);
   const verifyLink = `${ROOT_URL}verify/${tokenURL}/${saltURL}`;
 
-  const newToken = new VerificationToken({
-    user: user._id,
+  await redisSetEx(`email-verification:${user._id}`, 600, JSON.stringify({
     token: token.derivedToken,
     salt: token.salt,
-    expires: Date.now() + 600000,
-  });
-  await newToken.save();
+  }));
+
+  await redisSetEx(`verification-token:${token.derivedToken}`,
+    600, JSON.stringify({
+      user: user._id,
+    }));
 
   await verificationEmail.sendTo(user.email, {
     name: user.fullName,
@@ -72,17 +75,18 @@ async function verifyToken(tokenValue, salt) {
   const derivedToken = (await pbkdf2(tokenBuffer, saltBuffer, 25000, 512, 'sha256'))
     .toString('base64');
 
-  const token = await VerificationToken.findOne({
-    token: derivedToken,
-    expires: { $gt: Date.now() },
-  });
+  const redisKeyName = `verification-token:${derivedToken}`;
+  let token = await redisGet(redisKeyName);
 
   if (token) {
-    const user = await User.findById(token.user.toString());
+    token = JSON.parse(token);
+
+    const user = await User.findById(token.user);
     user.verified = true;
     await user.save();
 
-    await token.deleteOne();
+    await redisDel(redisKeyName);
+    await redisDel(`email-verification:${user._id}`);
   }
 
   return !!(token);
