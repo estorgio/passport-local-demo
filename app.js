@@ -10,6 +10,7 @@ const globalVars = require('./middleware');
 const indexRoutes = require('./routes');
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
+const accountRoutes = require('./routes/account');
 
 const dbConnect = require('./utils/db');
 const session = require('./utils/session');
@@ -45,8 +46,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', authRoutes);
 app.use('/dashboard', dashboardRoutes);
+app.use('/account', accountRoutes);
+app.use('/', authRoutes);
 app.use('/', indexRoutes);
 
 const port = process.env.PORT || 3000;
