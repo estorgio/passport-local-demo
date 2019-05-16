@@ -30,7 +30,10 @@
           <a class="nav-link" href="/signup">Sign Up</a>
         </li>
         <% } else { %>
-        <span class="navbar-text">Signed in as <%= currentUser.fullName %></span>
+        <span class="navbar-text">
+          <img src="/static/assets/default.png" alt="Profile Picture" width="25" class="rounded-circle">
+          <%= currentUser.fullName %>
+        </span>
         <li class="nav-item">
           <a class="nav-link" href="/logout">Log Out</a>
         </li>
