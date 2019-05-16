@@ -7,6 +7,12 @@ const limitLoginAttempts = rateLimiter({
   keyPrefix: 'limit-login',
 });
 
+const limitVerifyAttempts = rateLimiter({
+  points: process.env.VERIFY_ATTEMPTS_LIMIT,
+  duration: process.env.VERIFY_ATTEMPTS_DURATION,
+  keyPrefix: 'limit-verify',
+});
+
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
   req.flash('error', 'You must be signed in to perform this action.');
@@ -53,4 +59,5 @@ module.exports = {
   isLoggedIn,
   isLoggedOut,
   passportCustomAuth,
+  limitVerifyAttempts,
 };

@@ -87,19 +87,31 @@ router.post('/signup',
     }
   });
 
-router.get('/verify/:token/:salt', async (req, res, next) => {
-  try {
-    const { token, salt } = req.params;
-    if (await emailVerification.verifyToken(token, salt)) {
-      req.flash('success', 'Your account has been verified. You can now login to your account.');
-    } else {
-      req.flash('error', 'Account verification failed. The link may have expired or is no longer valid.');
+router.get('/verify/:token/:salt',
+  auth.limitVerifyAttempts,
+  async (req, res, next) => {
+    try {
+      const { rateLimit } = req;
+      const { token, salt } = req.params;
+
+      if (await rateLimit.hasExceeded()) {
+        req.flash('error', 'Unable to verify account. Please try again in a few hours.');
+        res.redirect('/login');
+        return;
+      }
+
+      if (await emailVerification.verifyToken(token, salt)) {
+        req.flash('success', 'Your account has been verified. You can now login to your account.');
+      } else {
+        await rateLimit.incrementCounter();
+        req.flash('error', 'Account verification failed. The link may have expired or is no longer valid.');
+      }
+
+      res.redirect('/login');
+    } catch (err) {
+      next(err);
     }
-    res.redirect('/login');
-  } catch (err) {
-    next(err);
-  }
-});
+  });
 
 router.use((err, req, res, next) => {
   if (err.code === 'ERECAPTCHAFAIL') {
