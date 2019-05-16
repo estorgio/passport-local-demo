@@ -30,12 +30,16 @@
           <a class="nav-link" href="/signup">Sign Up</a>
         </li>
         <% } else { %>
-        <span class="navbar-text">
-          <img src="/static/assets/default.png" alt="Profile Picture" width="25" class="rounded-circle">
-          <%= currentUser.fullName %>
-        </span>
-        <li class="nav-item">
-          <a class="nav-link" href="/logout">Log Out</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <img src="/static/assets/default.png" alt="Profile Picture" width="25" class="rounded-circle">
+            <%= currentUser.fullName %>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/account">My Account</a>
+            <a class="dropdown-item" href="/logout">Log Out</a>
+          </div>
         </li>
         <% } %>
       </ul>
