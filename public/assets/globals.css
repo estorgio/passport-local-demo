@@ -1,1 +1,6 @@
 /* Put all global css styles here */
+img.user-avatar {
+  height: 21px;
+  width: 21px;
+  margin-top: 0.15em;
+}
