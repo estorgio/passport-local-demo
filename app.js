@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const helmet = require('helmet');
 
@@ -39,6 +40,7 @@ app.use('/static/assets',
     { maxAge: '1d' }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.flashSuccess = req.flash('success');
