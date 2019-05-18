@@ -11,6 +11,7 @@ router.get('/',
   csurf,
   (req, res) => {
     const csrfToken = req.csrfToken();
+    res.locals.pageTitle = 'Account Settings';
     res.render('account/index', { csrfToken });
   });
 
