@@ -11,7 +11,7 @@
   <div class="row">
     <div class="col-12 col-md-5">
 
-      <form action="/account?_method=PUT" method="POST">
+      <form action="/account?_method=PUT" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
         <h4 class="mb-3">Basic Information</h4>
@@ -37,6 +37,14 @@
         <div class="form-group">
           <label for="confirmNewPassword">Confirm new password</label>
           <input type="password" class="form-control" name="confirmNewPassword" id="confirmNewPassword">
+        </div>
+
+        <h4 class="mb-3">Avatar</h4>
+        <div class="form-group">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="avatar" name="avatar">
+            <label class="custom-file-label" for="avatar">Choose file</label>
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
