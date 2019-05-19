@@ -1,4 +1,9 @@
 /* Put all global css styles here */
+
+body {
+  margin-bottom: 100px;
+}
+
 img.user-avatar {
   height: 21px;
   width: 21px;
