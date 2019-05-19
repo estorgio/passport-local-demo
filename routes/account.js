@@ -72,4 +72,14 @@ router.put('/',
     }
   });
 
+// eslint-disable-next-line no-unused-vars
+router.use((err, req, res, next) => {
+  if (err.name === 'MulterError') {
+    req.flash('error', err.message);
+    res.redirect('back');
+    return;
+  }
+  next(err);
+});
+
 module.exports = router;

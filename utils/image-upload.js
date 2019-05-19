@@ -26,7 +26,7 @@ function checkFileType(file, cb) {
 
   if (!mimetype || !extname) {
     const err = new Error('Only images are allowed (JPG, PNG, and GIF)');
-    err.name = 'NOTIMAGE';
+    err.name = 'MulterError';
     return cb(err);
   }
 
