@@ -11,5 +11,13 @@
   <title><%= pageTitle %> - Passport-Local Auth Demo </title>
 </head>
 <body>
-  <% include nav %>
-  <% include flash %>
+  <% include partials/nav %>
+  <% include partials/flash %>
+
+  <%- body %>
+
+  <script src="/static/vendor/jquery-3.4.0/jquery-3.4.0.min.js"></script>
+  <script src="/static/vendor/bootstrap-4.3.1-dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/assets/globals.js"></script>
+</body>
+</html>

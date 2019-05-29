@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const helmet = require('helmet');
+const expressLayouts = require('express-ejs-layouts');
 
 const globalVars = require('./middleware');
 const indexRoutes = require('./routes');
@@ -26,6 +27,7 @@ app.use(globalVars);
 app.use(helmet());
 app.use(session);
 app.use(auth);
+app.use(expressLayouts);
 
 app.set('view engine', 'ejs');
 
