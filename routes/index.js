@@ -7,7 +7,6 @@ const production = process.env.NODE_ENV
   : false;
 
 router.get('/', (req, res) => {
-  res.locals.pageTitle = 'Landing Page';
   res.render('index');
 });
 
@@ -18,7 +17,6 @@ router.get('/error', (req, res, next) => {
 
 // 404 page for undefined routes
 router.all('*', (req, res) => {
-  res.locals.pageTitle = 'Page Not Found';
   res.status(404);
   res.render('404');
 });
@@ -27,7 +25,6 @@ router.all('*', (req, res) => {
 // eslint-disable-next-line no-unused-vars
 function globalErrorHandler(err, req, res, next) {
   const errorInfo = !production ? err : null;
-  res.locals.pageTitle = 'Internal Server Error';
   res.status(500);
   res.render('error', { errorInfo });
 }

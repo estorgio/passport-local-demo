@@ -24,10 +24,10 @@ dbConnect();
 const app = express();
 
 app.use(globalVars);
+app.use(expressLayouts);
 app.use(helmet());
 app.use(session);
 app.use(auth);
-app.use(expressLayouts);
 
 app.set('view engine', 'ejs');
 

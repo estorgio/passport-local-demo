@@ -13,8 +13,6 @@ router.get('/login',
   csurf,
   (req, res) => {
     const csrfToken = req.csrfToken();
-
-    res.locals.pageTitle = 'Log In';
     res.render('auth/login', { csrfToken });
   });
 
@@ -56,8 +54,6 @@ router.get('/signup',
   (req, res) => {
     const csrfToken = req.csrfToken();
     const recaptchaSiteKey = recaptcha.getSiteKey();
-
-    res.locals.pageTitle = 'Sign Up';
     res.render('auth/signup', { csrfToken, recaptchaSiteKey });
   });
 
