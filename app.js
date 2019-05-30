@@ -23,12 +23,6 @@ dbConnect();
 
 const app = express();
 
-app.use(globalVars);
-app.use(expressLayouts);
-app.use(helmet());
-app.use(session);
-app.use(auth);
-
 app.set('view engine', 'ejs');
 
 app.set('trust proxy', getIP.isTrustedProxy());
@@ -40,6 +34,12 @@ app.use('/static/vendor',
 app.use('/static/assets',
   express.static(path.join(__dirname, 'public', 'assets'),
     { maxAge: '1d' }));
+
+app.use(globalVars);
+app.use(expressLayouts);
+app.use(helmet());
+app.use(session);
+app.use(auth);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
