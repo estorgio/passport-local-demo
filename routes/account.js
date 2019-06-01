@@ -49,7 +49,7 @@ router.put('/',
       req.user.email = email;
       req.user.avatar = req.cloudinary && req.cloudinary.secure_url
         ? req.cloudinary.secure_url
-        : '';
+        : req.user.avatar;
       await req.user.save();
 
       const login = util.promisify(req.login).bind(req);
