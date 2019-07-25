@@ -15,6 +15,7 @@ const limitVerifyAttempts = rateLimiter({
 
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
+  req.session.redirectTo = req.originalUrl;
   req.flash('error', 'You must be signed in to perform this action.');
   return res.redirect('/login');
 }

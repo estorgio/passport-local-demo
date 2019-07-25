@@ -33,7 +33,9 @@ router.post('/login',
   async (req, res) => {
     if (req.isAuthenticated()) {
       req.flash('success', 'You have successfully logged in.');
-      res.redirect('/dashboard');
+      const redirectUrl = req.session.redirectTo || '/dashboard';
+      delete req.session.redirectTo;
+      res.redirect(redirectUrl);
     } else {
       req.flash('error', 'Invalid username or password!');
       res.redirect('/login');
