@@ -42,8 +42,6 @@ function passportCustomAuth(strategy) {
           return;
         }
 
-        req.isAuthenticated = !!(user);
-
         if (user) {
           req.login(user, next);
         } else {

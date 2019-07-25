@@ -21,7 +21,7 @@ router.post('/login',
   csurf,
   auth.passportCustomAuth('local'),
   async (req, res, next) => {
-    if (!req.isAuthenticated || req.user.verified) {
+    if (!req.isAuthenticated() || req.user.verified) {
       next();
       return;
     }
@@ -31,7 +31,7 @@ router.post('/login',
     res.redirect('/login');
   },
   async (req, res) => {
-    if (req.isAuthenticated) {
+    if (req.isAuthenticated()) {
       req.flash('success', 'You have successfully logged in.');
       res.redirect('/dashboard');
     } else {
