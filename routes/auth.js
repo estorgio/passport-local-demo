@@ -8,15 +8,13 @@ const auth = require('../middleware/auth');
 const recaptcha = require('../utils/recaptcha');
 const emailVerification = require('../utils/email-verification');
 
-router.get('/login',
-  auth.isLoggedOut,
-  csurf,
-  (req, res) => {
-    const csrfToken = req.csrfToken();
-    res.render('auth/login', { csrfToken });
-  });
+router.get('/login', auth.isLoggedOut, csurf, (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.render('auth/login', { csrfToken });
+});
 
-router.post('/login',
+router.post(
+  '/login',
   auth.isLoggedOut,
   csurf,
   auth.passportCustomAuth('local'),
@@ -27,7 +25,10 @@ router.post('/login',
     }
     await emailVerification.sendVerificationEmail(req.user);
     req.logout();
-    req.flash('success', 'Your account is almost done. To complete the sign up, please open the verification link sent to you via email');
+    req.flash(
+      'success',
+      'Your account is almost done. To complete the sign up, please open the verification link sent to you via email',
+    );
     res.redirect('/login');
   },
   async (req, res) => {
@@ -40,26 +41,23 @@ router.post('/login',
       req.flash('error', 'Invalid username or password!');
       res.redirect('/login');
     }
-  });
+  },
+);
 
-router.get('/logout',
-  auth.isLoggedIn,
-  (req, res) => {
-    req.logout();
-    req.flash('success', 'You have now logged out.');
-    res.redirect('/login');
-  });
+router.get('/logout', auth.isLoggedIn, (req, res) => {
+  req.logout();
+  req.flash('success', 'You have now logged out.');
+  res.redirect('/login');
+});
 
-router.get('/signup',
-  auth.isLoggedOut,
-  csurf,
-  (req, res) => {
-    const csrfToken = req.csrfToken();
-    const recaptchaSiteKey = recaptcha.getSiteKey();
-    res.render('auth/signup', { csrfToken, recaptchaSiteKey });
-  });
+router.get('/signup', auth.isLoggedOut, csurf, (req, res) => {
+  const csrfToken = req.csrfToken();
+  const recaptchaSiteKey = recaptcha.getSiteKey();
+  res.render('auth/signup', { csrfToken, recaptchaSiteKey });
+});
 
-router.post('/signup',
+router.post(
+  '/signup',
   auth.isLoggedOut,
   csurf,
   recaptcha.validate(),
@@ -77,15 +75,20 @@ router.post('/signup',
 
       await emailVerification.sendVerificationEmail(newUser);
 
-      req.flash('success', 'Your account is almost finished. Please check your email for the verification link.');
+      req.flash(
+        'success',
+        'Your account is almost finished. Please check your email for the verification link.',
+      );
       res.redirect('/login');
     } catch (err) {
       req.flash('error', err.message);
       res.redirect('/signup');
     }
-  });
+  },
+);
 
-router.get('/verify/:token/:salt',
+router.get(
+  '/verify/:token/:salt',
   auth.limitVerifyAttempts,
   async (req, res, next) => {
     try {
@@ -93,23 +96,33 @@ router.get('/verify/:token/:salt',
       const { token, salt } = req.params;
 
       if (await rateLimit.hasExceeded()) {
-        req.flash('error', 'Unable to verify account. Please try again in a few hours.');
+        req.flash(
+          'error',
+          'Unable to verify account. Please try again in a few hours.',
+        );
         res.redirect('/login');
         return;
       }
 
       if (await emailVerification.verifyToken(token, salt)) {
-        req.flash('success', 'Your account has been verified. You can now login to your account.');
+        req.flash(
+          'success',
+          'Your account has been verified. You can now login to your account.',
+        );
       } else {
         await rateLimit.incrementCounter();
-        req.flash('error', 'Account verification failed. The link may have expired or is no longer valid.');
+        req.flash(
+          'error',
+          'Account verification failed. The link may have expired or is no longer valid.',
+        );
       }
 
       res.redirect('/login');
     } catch (err) {
       next(err);
     }
-  });
+  },
+);
 
 router.use((err, req, res, next) => {
   if (err.code === 'ERECAPTCHAFAIL') {

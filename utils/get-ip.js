@@ -1,5 +1,5 @@
 const production = (process.env.NODE_ENV
-  && process.env.NODE_ENV.toLowerCase() === 'production')
+    && process.env.NODE_ENV.toLowerCase() === 'production')
   || false;
 
 function extractClientIP(req, res, next) {

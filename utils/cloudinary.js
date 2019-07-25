@@ -48,8 +48,10 @@ async function uploadMiddleware(req, res, next) {
     }
 
     originalImage = req.file.path;
-    minifiedImage = path.join(req.file.destination,
-      `${path.parse(req.file.path).name}_converted.jpg`);
+    minifiedImage = path.join(
+      req.file.destination,
+      `${path.parse(req.file.path).name}_converted.jpg`,
+    );
 
     await minifyImage(originalImage, minifiedImage);
     req.file.minified = minifiedImage;

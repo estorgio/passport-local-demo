@@ -9,7 +9,7 @@ const {
   NODEMAILER_SENDER_EMAIL,
 } = process.env;
 
-const NODEMAILER_SECURE = (process.env.NODEMAILER_SECURE === 'true');
+const NODEMAILER_SECURE = process.env.NODEMAILER_SECURE === 'true';
 
 const transporter = nodemailer.createTransport({
   host: NODEMAILER_HOST,

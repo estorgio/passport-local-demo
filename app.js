@@ -28,12 +28,17 @@ app.set('view engine', 'ejs');
 app.set('trust proxy', getIP.isTrustedProxy());
 app.use(getIP.extractClientIP);
 
-app.use('/static/vendor',
-  express.static(path.join(__dirname, 'public', 'vendor'),
-    { immutable: true, maxAge: '1y' }));
-app.use('/static/assets',
-  express.static(path.join(__dirname, 'public', 'assets'),
-    { maxAge: '1d' }));
+app.use(
+  '/static/vendor',
+  express.static(path.join(__dirname, 'public', 'vendor'), {
+    immutable: true,
+    maxAge: '1y',
+  }),
+);
+app.use(
+  '/static/assets',
+  express.static(path.join(__dirname, 'public', 'assets'), { maxAge: '1d' }),
+);
 
 app.use(globalVars);
 app.use(expressLayouts);

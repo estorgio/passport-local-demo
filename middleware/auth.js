@@ -32,7 +32,10 @@ function passportCustomAuth(strategy) {
       const { rateLimit } = req;
 
       if (await rateLimit.hasExceeded()) {
-        req.flash('error', 'Max login attempts exceeded. Please try again later.');
+        req.flash(
+          'error',
+          'Max login attempts exceeded. Please try again later.',
+        );
         res.redirect('/login');
         return;
       }

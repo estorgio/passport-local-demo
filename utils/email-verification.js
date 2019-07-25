@@ -41,7 +41,7 @@ const verificationEmail = mailer.createTemplate(params => ({
 
 async function hasValidToken(user) {
   const token = await redisGet(`email-verification:${user._id}`);
-  return !!(token);
+  return !!token;
 }
 
 async function sendVerificationEmail(user) {
@@ -52,15 +52,22 @@ async function sendVerificationEmail(user) {
   const saltURL = encodeURIComponent(token.salt);
   const verifyLink = `${ROOT_URL}verify/${tokenURL}/${saltURL}`;
 
-  await redisSetEx(`email-verification:${user._id}`, 600, JSON.stringify({
-    token: token.derivedToken,
-    salt: token.salt,
-  }));
+  await redisSetEx(
+    `email-verification:${user._id}`,
+    600,
+    JSON.stringify({
+      token: token.derivedToken,
+      salt: token.salt,
+    }),
+  );
 
-  await redisSetEx(`verification-token:${token.derivedToken}`,
-    600, JSON.stringify({
+  await redisSetEx(
+    `verification-token:${token.derivedToken}`,
+    600,
+    JSON.stringify({
       user: user._id,
-    }));
+    }),
+  );
 
   await verificationEmail.sendTo(user.email, {
     name: user.fullName,
@@ -72,8 +79,13 @@ async function verifyToken(tokenValue, salt) {
   const tokenBuffer = Buffer.from(tokenValue, 'base64');
   const saltBuffer = Buffer.from(salt, 'base64');
 
-  const derivedToken = (await pbkdf2(tokenBuffer, saltBuffer, 25000, 512, 'sha256'))
-    .toString('base64');
+  const derivedToken = (await pbkdf2(
+    tokenBuffer,
+    saltBuffer,
+    25000,
+    512,
+    'sha256',
+  )).toString('base64');
 
   const redisKeyName = `verification-token:${derivedToken}`;
   let token = await redisGet(redisKeyName);
@@ -89,7 +101,7 @@ async function verifyToken(tokenValue, salt) {
     await redisDel(`email-verification:${user._id}`);
   }
 
-  return !!(token);
+  return !!token;
 }
 
 module.exports = {

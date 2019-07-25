@@ -10,21 +10,15 @@ const router = express.Router();
 
 const auth = require('../middleware/auth');
 
-const deleteImageFiles = cleanup(req => (
-  req.file
-    ? [req.file.path, req.file.minified]
-    : []
-));
+const deleteImageFiles = cleanup(req => (req.file ? [req.file.path, req.file.minified] : []));
 
-router.get('/',
-  auth.isLoggedIn,
-  csurf,
-  (req, res) => {
-    const csrfToken = req.csrfToken();
-    res.render('account/index', { csrfToken });
-  });
+router.get('/', auth.isLoggedIn, csurf, (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.render('account/index', { csrfToken });
+});
 
-router.put('/',
+router.put(
+  '/',
   auth.isLoggedIn,
   imageUpload.single('avatar'),
   csurf,
@@ -33,11 +27,7 @@ router.put('/',
   async (req, res, next) => {
     try {
       const { fullName, email } = req.body;
-      const {
-        currentPassword,
-        newPassword,
-        confirmNewPassword,
-      } = req.body;
+      const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
       if (newPassword !== confirmNewPassword) {
         req.flash('error', 'Passwords do not match.');
@@ -69,7 +59,8 @@ router.put('/',
       }
       next(err);
     }
-  });
+  },
+);
 
 // eslint-disable-next-line no-unused-vars
 router.use((err, req, res, next) => {
