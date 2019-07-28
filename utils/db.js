@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
+const { isVolatile } = require('./volatile');
 
-const connectionString = process.env.DB_CONNECTION;
+const connectionString = isVolatile()
+  ? process.env.DB_CONNECTION_VOLATILE
+  : process.env.DB_CONNECTION;
 
 function connect() {
   const options = {
     useNewUrlParser: true,
     useFindAndModify: false,
+    useCreateIndex: true,
     bufferCommands: false,
     bufferMaxEntries: 0,
     reconnectTries: Number.MAX_VALUE,

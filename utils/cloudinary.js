@@ -1,7 +1,7 @@
 const cloudinary = require('cloudinary');
 const sharp = require('sharp');
 const path = require('path');
-const volatile = require('./volatile');
+const { isVolatile } = require('./volatile');
 
 const cloudinaryFolder = process.env.CLOUDINARY_FOLDER;
 
@@ -15,7 +15,7 @@ function uploadToCloudinary(imageFile) {
   return new Promise((resolve, reject) => {
     const options = {
       folder: cloudinaryFolder,
-      tags: volatile.isVolatile() ? ['volatile'] : [],
+      tags: isVolatile() ? ['volatile'] : [],
     };
     cloudinary.v2.uploader.upload(imageFile, options, (err, result) => {
       if (err) {
