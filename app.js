@@ -14,7 +14,7 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const accountRoutes = require('./routes/account');
 
-const dbConnect = require('./utils/db');
+const { dbConnect, dbConnectionCheck } = require('./utils/db');
 const session = require('./utils/session');
 const auth = require('./utils/auth');
 const getIP = require('./utils/get-ip');
@@ -43,6 +43,7 @@ app.use(
 app.use(globalVars);
 app.use(expressLayouts);
 app.use(helmet());
+app.use(dbConnectionCheck);
 app.use(session);
 app.use(auth);
 
