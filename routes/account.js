@@ -58,7 +58,8 @@ router.put(
 
 // eslint-disable-next-line no-unused-vars
 router.use((err, req, res, next) => {
-  if (err.name === 'MulterError') {
+  const catchErrors = ['MulterError', 'MissingPasswordError'];
+  if (catchErrors.some(name => name === err.name)) {
     req.flash('error', err.message);
     res.redirect('back');
     return;
