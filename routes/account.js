@@ -1,16 +1,10 @@
 const express = require('express');
 const csurf = require('csurf')();
 const util = require('util');
-
+const auth = require('../middleware/auth');
 const imageUpload = require('../utils/image-upload');
-const cloudinary = require('../utils/cloudinary');
-const cleanup = require('../utils/cleanup');
 
 const router = express.Router();
-
-const auth = require('../middleware/auth');
-
-const deleteImageFiles = cleanup(req => (req.file ? [req.file.path, req.file.minified] : []));
 
 router.get('/', auth.isLoggedIn, csurf, (req, res) => {
   const csrfToken = req.csrfToken();
@@ -22,8 +16,6 @@ router.put(
   auth.isLoggedIn,
   imageUpload.single('avatar'),
   csurf,
-  cloudinary,
-  deleteImageFiles,
   async (req, res, next) => {
     try {
       const { fullName, email } = req.body;
@@ -35,11 +27,13 @@ router.put(
         return;
       }
 
+      const upload = await req.startUpload();
+      if (upload && upload.secure_url) {
+        req.user.avatar = upload.secure_url;
+      }
+
       req.user.fullName = fullName;
       req.user.email = email;
-      req.user.avatar = req.cloudinary && req.cloudinary.secure_url
-        ? req.cloudinary.secure_url
-        : req.user.avatar;
       await req.user.save();
 
       const login = util.promisify(req.login).bind(req);
