@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
-const { isVolatile } = require('./volatile');
+require('./volatile').setVolatileDB();
 
-const connectionString = isVolatile()
-  ? process.env.DB_CONNECTION_VOLATILE
-  : process.env.DB_CONNECTION;
+const connectionString = process.env.DB_CONNECTION;
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
