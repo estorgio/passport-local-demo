@@ -20,6 +20,7 @@ async function dbConnect() {
         useNewUrlParser: true,
         useFindAndModify: false,
         useCreateIndex: true,
+        useUnifiedTopology: true,
         bufferCommands: false,
         bufferMaxEntries: 0,
         reconnectTries: Number.MAX_VALUE,
