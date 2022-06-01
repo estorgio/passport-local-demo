@@ -41,7 +41,7 @@
     "passport-local-mongoose": "^5.0.1",
     "rate-limiter-flexible": "^1.0.3",
     "redis": "^2.8.0",
-    "sharp": "^0.22.1"
+    "sharp": "^0.30.5"
   },
   "husky": {
     "hooks": {
